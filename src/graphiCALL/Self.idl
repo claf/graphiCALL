@@ -1,0 +1,5 @@
+package graphiCALL;
+
+public interface Self {
+  void self_work (int start, int end);
+}
