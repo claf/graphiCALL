@@ -13,4 +13,4 @@ Use :
 - xkaapi_version :
     make perl # generate the code
     make
-    LD_LIBRARY_PATH=$HOME/opt/lib ./graphiCALL
+    make run
