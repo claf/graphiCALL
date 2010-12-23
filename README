@@ -1,0 +1,16 @@
+Repository structure :
+
+- cecilia_version : directory containing the actual code using Cecilia.
+
+- xkaapi_version : directory containing the generated code using 'make perl' command. 
+
+Use :
+
+- cecilia_version : 
+    make
+    make run
+
+- xkaapi_version :
+    make perl # generate the code
+    make
+    LD_LIBRARY_PATH=$HOME/opt/lib ./graphiCALL
