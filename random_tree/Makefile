@@ -14,7 +14,7 @@ tree: $(OBJ)
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 run:
-	./tree test.dot
+	./tree test.dot && dot -Tpng test.dot -o test.png
 
 clean:
 	rm -rf tree *.o
