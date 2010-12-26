@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#define MAX_CHILDS 1
+#define MAX_CHILDS 4
 
 DECLARE_DATA {
 };
@@ -22,12 +22,15 @@ void METHOD(self, self_work)(void* _this, int childs, int layer)
   int i;
   static int dummy = 0;
 
-  dummy++;
-  printf ("Layer %d\tRound %d\tChilds %d\n", layer, dummy, childs);
-
-  for (j = 0; j < childs; j++)
+  if (layer != 0)
   {
-    CALLMINE(self, self_work, my_rand (), layer-1);
+    dummy++;
+    printf ("Layer %d\tRound %d\tChilds %d\n", layer, dummy, childs);
+
+    for (i = 0; i < childs; i++)
+    {
+      CALLMINE(self, self_work, my_rand (), layer-1);
+    }
   }
 }
 
