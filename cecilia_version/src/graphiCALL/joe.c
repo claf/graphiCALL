@@ -25,7 +25,7 @@ void METHOD(self, self_work)(void* _this, int childs, int layer)
 
   if (layer != 0)
   {
-    dummy++;
+    __sync_fetch_and_add( &dummy, 1);
     printf ("Layer %d\tRound %d\tChilds %d\n", layer, dummy, childs);
 
     for (i = 0; i < childs; i++)
