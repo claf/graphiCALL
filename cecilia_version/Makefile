@@ -23,7 +23,7 @@ clean:
 	rm -Rf build target
 
 run: graphiCALL
-	./build/graphiCALL/obj/graphiCALL
+	./build/graphiCALL/obj/graphiCALL 5
 
 .PHONY: all graphiCALL
 	

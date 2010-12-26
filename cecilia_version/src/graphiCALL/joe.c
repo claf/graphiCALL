@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 #define MAX_CHILDS 4
 
 DECLARE_DATA {
@@ -39,7 +40,13 @@ int METHOD(entry, main)(void *_this, int argc, char** argv)
   unsigned int iseed = (unsigned int)time(NULL);
   srand (iseed);
 
-  CALLMINE(self, self_work, my_rand (), 10);
+  if (argc != 2)
+  {
+    printf ("\tUsage : ./graphiCALL layer\n\t\tlayer : number of layers in generated tree\n");
+    return 1;
+  }
+
+  CALLMINE(self, self_work, my_rand (), atoi(argv[1]));
 
   return 0;
 }
