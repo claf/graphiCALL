@@ -1,26 +1,42 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#define MAX_CHILDS 1
 
 DECLARE_DATA {
 };
 
 #include <cecilia.h>
 
-void METHOD(self, self_work)(void* _this, int start, int end)
+int my_rand ()
+{
+  int childs = 0;
+
+  childs = (int)( (MAX_CHILDS + 1.0) * rand() / ( RAND_MAX + 1.0 ) );
+
+  return childs;
+}
+
+void METHOD(self, self_work)(void* _this, int childs, int layer)
 {
   int i;
-  int dummy = 0;
+  static int dummy = 0;
 
-  for (i = start; i < end; i++)
+  dummy++;
+  printf ("Layer %d\tRound %d\tChilds %d\n", layer, dummy, childs);
+
+  for (j = 0; j < childs; j++)
   {
-    dummy += i;
-    printf ("%d\n", i);
-    //dummy_work();
+    CALLMINE(self, self_work, my_rand (), layer-1);
   }
 }
 
 int METHOD(entry, main)(void *_this, int argc, char** argv)
 {
-  CALLMINE(self, self_work, 1, 2000);
+  unsigned int iseed = (unsigned int)time(NULL);
+  srand (iseed);
+
+  CALLMINE(self, self_work, my_rand (), 10);
 
   return 0;
 }
