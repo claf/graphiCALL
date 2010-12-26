@@ -1,0 +1,2 @@
+- uses atomic inc for some variable to prevent problems in xkaapi conversion.
+
