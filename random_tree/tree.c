@@ -15,7 +15,8 @@ int create_tree (igraph_t* graph, int desired_number_of_non_leaf_nodes, int min_
 
     if (next_parent >= next_child) {
       /* You may simply break out of the loop here instead of printing an error */
-      IGRAPH_ERROR("ran out of potential parent nodes", IGRAPH_EINVAL);
+      //IGRAPH_ERROR("ran out of potential parent nodes", IGRAPH_EINVAL);
+      break;
     }
 
     for (i = 0; i < num_children; i++) {
