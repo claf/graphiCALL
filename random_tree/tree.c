@@ -1,6 +1,7 @@
 #include <igraph/igraph.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 int create_tree (igraph_t* graph, int desired_number_of_non_leaf_nodes, int min_children, int max_children)
 {
