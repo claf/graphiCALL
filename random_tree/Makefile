@@ -17,9 +17,6 @@ run:
 	./tree test.dot && dot -Tpng test.dot -o test.png
 
 clean:
-	rm -rf tree *.o
-
-veryclean:
-	rm -rf tree *.o *.dot
+	rm -rf tree *.o *.dot *.png
 
 .SILENT: clean veryclean
