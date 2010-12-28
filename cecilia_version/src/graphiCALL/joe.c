@@ -2,21 +2,14 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#define MAX_CHILDS 4
+
+#define my_rand() (int)( (DATA.max_childs + 1.0) * rand() / ( RAND_MAX + 1.0 ) )
 
 DECLARE_DATA {
+  int max_childs;
 };
 
 #include <cecilia.h>
-
-int my_rand ()
-{
-  int childs = 0;
-
-  childs = (int)( (MAX_CHILDS + 1.0) * rand() / ( RAND_MAX + 1.0 ) );
-
-  return childs;
-}
 
 void METHOD(self, self_work)(void* _this, int childs, int layer)
 {
@@ -38,13 +31,18 @@ void METHOD(self, self_work)(void* _this, int childs, int layer)
 int METHOD(entry, main)(void *_this, int argc, char** argv)
 {
   unsigned int iseed = (unsigned int)time(NULL);
+
   srand (iseed);
 
-  if (argc != 2)
+  if (argc != 3)
   {
-    printf ("\tUsage : ./graphiCALL layer\n\t\tlayer : number of layers in generated tree\n");
+    printf ("\tUsage : ./graphiCALL layer max_childs\n");
+    printf ("\t\tlayer : number of layers in generated tree\n");
+    printf ("\t\tmax_childs : number of max childs in generated tree\n");
     return 1;
   }
+
+  DATA.max_childs = atoi (argv[2]);
 
   CALLMINE(self, self_work, my_rand (), atoi(argv[1]));
 
