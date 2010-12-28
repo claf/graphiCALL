@@ -4,6 +4,8 @@ Repository structure :
 
 - xkaapi_version : directory containing the generated code using 'make perl' command. 
 
+- random_tree : random generation of tree using igraph lib.
+
 Use :
 
 - cecilia_version : 
@@ -14,3 +16,7 @@ Use :
     make perl # generate the code
     make
     make run
+
+- random_tree :
+    make
+    make run # generate test.dot and test.png
