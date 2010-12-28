@@ -19,7 +19,7 @@ perl:
 	cecilia2xkaapi.pl ../cecilia_version/src/graphiCALL/*.c
 
 run:
-	LD_LIBRARY_PATH=$(HOME)/opt/lib/ ./graphiCALL 5	
+	LD_LIBRARY_PATH=$(HOME)/opt/lib/ ./graphiCALL 5 4	
 
 clean:
 	rm -rf graphiCALL *.o
