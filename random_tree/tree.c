@@ -2,15 +2,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
+#include <ctype.h>
 
-int create_tree (igraph_t* graph, int desired_number_of_non_leaf_nodes, int min_children, int max_children)
+int create_tree (igraph_t* graph, int layers, int max_nodes, int min_children, int max_children)
 {
   igraph_vector_t edgelist;
-  int next_parent = 0, next_child = 1, i;
+  int next_parent = 0, next_child = 1, next_layer = 1, current_layer = 1, i;
 
   igraph_vector_init(&edgelist, 0);
 
-  while (next_parent < desired_number_of_non_leaf_nodes) {
+  while ((next_parent < max_nodes) || (current_layer <= layers)) {
     int num_children = rand() % (max_children - min_children + 1) + min_children;
 
     if (next_parent >= next_child) {
@@ -23,9 +25,21 @@ int create_tree (igraph_t* graph, int desired_number_of_non_leaf_nodes, int min_
       IGRAPH_CHECK(igraph_vector_push_back(&edgelist, next_parent));
       IGRAPH_CHECK(igraph_vector_push_back(&edgelist, next_child));
       next_child++;
+      if (next_child > max_nodes)
+      {
+        igraph_create(graph, &edgelist, 0, 0);
+
+        return IGRAPH_SUCCESS;
+      }
     }
 
     next_parent++;
+
+    if (next_parent == next_layer) 
+    {
+      current_layer++;
+      next_layer = next_child;
+    }
   }
 
   igraph_create(graph, &edgelist, 0, 0);
@@ -38,38 +52,84 @@ int create_tree (igraph_t* graph, int desired_number_of_non_leaf_nodes, int min_
 
 int main(int argc, char** argv)
 {
-  int ret;
+  char* filename, buf[50];
+  int max_nodes, max_childs, layers, nb_trees, opt, ret;
+
+  while ((opt = getopt (argc, argv, "k:f:n:c:l:")) != -1)
+  {
+    switch (opt)
+    {
+      case 'l': // layers
+        layers = atoi(optarg);
+        printf ("option l %d\n", layers);
+        break;
+      case 'k': // number of tree generated
+        nb_trees = atoi(optarg);
+        printf ("option k %d\n", nb_trees);
+        break;
+      case 'f': // file
+        filename = optarg;
+        printf ("option f %s\n", filename);
+        break;
+      case 'n': // nodes
+        max_nodes = atoi(optarg);
+        printf ("option n %d\n", max_nodes);
+        break;
+      case 'c': // childs
+        max_childs = atoi(optarg);
+        printf ("option c %d\n", max_childs);
+        break;
+      case '?':
+        if ((optopt == 'c')||(optopt == 'f')||(optopt == 'n'))
+          fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+        else if (isprint (optopt))
+          fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+        else
+          fprintf (stderr,
+              "Unknown option character `\\x%x'.\n",
+              optopt);
+        return 1;
+      default:
+        abort ();
+    }
+  }
+
+  srand(time(0));
+
   igraph_t graph;
   FILE *fp;
 
-  if (argc != 2)
-    printf ("\tUsage : ./tree file.dot\n");
+  // Extrem case 1 :
+  // 0
 
-  if((fp = fopen(argv[1], "wt")) == NULL) {
-    printf("Cannot open file.\n");
-    exit (0);
+  // Extrem case 2 :
+  // nb_trees
+
+  // Random generation :
+  for (int i=1; i < nb_trees - 1; i++)
+  {
+    // Files opening :
+    sprintf(buf, "%s_%03d.dot", filename, i); 
+    
+    if((fp = fopen(buf, "wt")) == NULL)
+    {
+      printf ("Opening file %s\n", buf);
+      exit (0);
+    }
+
+    // Graphs creation :
+    //ret = igraph_tree( &graph, max_nodes, max_childs, IGRAPH_TREE_OUT);
+    create_tree(&graph, layers, max_nodes, 1, max_childs);
+
+    // Write graphs to files :
+    igraph_write_graph_dot(&graph, fp);
+  
+    // Graphs destruction :
+    igraph_destroy(&graph);
+    
+    // Close file :
+    fclose (fp);
   }
-
-  ret = igraph_tree( &graph, 13, 3, IGRAPH_TREE_OUT);
-
-  if (ret == IGRAPH_EINVAL)
-    printf ("ERROR : invalid number of vertices\n");
-  else
-    printf ("Tree created!\n");
-
-  //igraph_write_graph_dot(&graph, fp);
-
-  igraph_destroy(&graph);
-
-  // Usage :
-  igraph_t graph2;
-
-  srand(time(0));
-  create_tree(&graph2, 10, 0, 4);
-
-  igraph_write_graph_dot(&graph2, fp);
-
-  igraph_destroy(&graph2);
 
   return 0;
 }
