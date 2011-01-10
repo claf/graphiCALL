@@ -16,19 +16,23 @@ unsigned int* sons;
 
 void work(int aow)
 {
-
+  int i;
+  for (i=0; i < aow; i++)
+  {
+    // TODO : find something to do!
+  } 
 }
 
 void METHOD(self, self_work)(void* _this, int node)
 {
   int i, round;
   static int dummy = 0;
-  //tick_t t1, t2;
+  tick_t t1, t2;
 
-  //GET_TICK (t1);
+  GET_TICK (t1);
 
 
-  /* TODO : do your amount of work : */
+  /* do your amount of work : */
   work (weights[node]);
 
 
@@ -39,8 +43,8 @@ void METHOD(self, self_work)(void* _this, int node)
     CALLMINE(self, self_work, children[node][i]);
   }
 
-  //GET_TICK (t2);
-  //printf ("\tTick diff for Round %d(%d) : %.0llu\n", round, dummy ,TICK_DIFF (t1, t2));
+  GET_TICK (t2);
+  printf ("\tTick diff for Round %d(%d) : %.0llu\n", round, dummy ,TICK_DIFF (t1, t2));
 }
 
 int METHOD(entry, main)(void *_this, int argc, char** argv)
