@@ -1,5 +1,5 @@
 package graphiCALL;
 
 public interface Self {
-  void self_work (int start, int end);
+  void self_work (int node);
 }
