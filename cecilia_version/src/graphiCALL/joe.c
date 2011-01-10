@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include <timing.h>
 
 #define my_rand() (int)( (DATA.max_childs + 1.0) * rand() / ( RAND_MAX + 1.0 ) )
 
@@ -14,17 +13,12 @@ DECLARE_DATA {
 
 void METHOD(self, self_work)(void* _this, int childs, int layer)
 {
-  int i, round;
+  int i;
   static int dummy = 0;
-  tick_t t1, t2;
 
-  GET_TICK (t1);
-
-  __sync_fetch_and_add( &dummy, 1);
-  round = dummy;
-
-  if ((layer != 0)&&(childs != 0))
+  if (layer != 0)
   {
+    __sync_fetch_and_add( &dummy, 1);
     printf ("Layer %d\tRound %d\tChilds %d\n", layer, dummy, childs);
 
     for (i = 0; i < childs; i++)
@@ -32,16 +26,11 @@ void METHOD(self, self_work)(void* _this, int childs, int layer)
       CALLMINE(self, self_work, my_rand (), layer-1);
     }
   }
-
-  GET_TICK (t2);
-  printf ("\tTick diff for Round %d(%d) : %.0llu\n", round, dummy ,TICK_DIFF (t1, t2));
 }
 
 int METHOD(entry, main)(void *_this, int argc, char** argv)
 {
   unsigned int iseed = (unsigned int)time(NULL);
-
-  timing_init();
 
   srand (iseed);
 
