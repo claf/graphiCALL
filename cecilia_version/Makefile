@@ -12,7 +12,7 @@ all: graphiCALL
 
 # START SNIPPET: graphiCALL-rule
 graphiCALL: build/graphiCALL
-	$(CECILIAC) -src-path=src -I="../" -o=build/graphiCALL -t=unix \
+	$(CECILIAC) -src-path=src -I="../" -l="-lm" -o=build/graphiCALL -t=unix \
 	  graphiCALL.graphiCALL:graphiCALL
 # END SNIPPET: graphiCALL-rule
 
@@ -23,7 +23,7 @@ clean:
 	rm -Rf build target
 
 run: graphiCALL
-	./build/graphiCALL/obj/graphiCALL 5 4
+	./build/graphiCALL/obj/graphiCALL ../dots/tests_1.dot
 
 .PHONY: all graphiCALL
 	

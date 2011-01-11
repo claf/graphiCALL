@@ -3,48 +3,45 @@
 #include <math.h>
 #include <time.h>
 #include <timing.h>
+#include <math.h>
 
 DECLARE_DATA {
 };
 
 #include <cecilia.h>
 
+#define _GRAPHICALL_TIMING 1
+//#define _GRAPHICALL_DEBUG 1
 unsigned int** children;
 unsigned int* weights;
 unsigned int* sons;
 
-
 void work(int aow)
 {
-  int i;
-  for (i=0; i < aow; i++)
+  int i, foo, bar;
+  for (i=0; i < aow * 10000; i++)
   {
-    // TODO : find something to do!
+    foo = sqrt (aow);
+    bar = pow (foo, i);
   } 
 }
 
 void METHOD(self, self_work)(void* _this, int node)
 {
-  int i, round;
-  static int dummy = 0;
-  tick_t t1, t2;
+  int i;
 
-  GET_TICK (t1);
-
-
-  /* do your amount of work : */
+  /* Do your amount of work : */
   work (weights[node]);
-
 
   /* Then call your sons : */
   for (i = 0; i < sons[node]; i++)
   {
+#ifdef _GRAPHICALL_DEBUG
     printf ("CALLING %d, son of %d\n", children[node][i], node);
+#endif
     CALLMINE(self, self_work, children[node][i]);
   }
 
-  GET_TICK (t2);
-  printf ("\tTick diff for Round %d(%d) : %.0llu\n", round, dummy ,TICK_DIFF (t1, t2));
 }
 
 int METHOD(entry, main)(void *_this, int argc, char** argv)
@@ -60,7 +57,7 @@ int METHOD(entry, main)(void *_this, int argc, char** argv)
   {
     printf ("\tUsage : ./graphiCALL filename\n");
     printf ("\t\tfilename : filename of the generated .dot file\n");
-    return 1;
+    exit (1);
   }
 
   /* DOT file parsing : */
@@ -82,9 +79,11 @@ int METHOD(entry, main)(void *_this, int argc, char** argv)
   while (fscanf(file, "%d : %d / %d", &current_node, &weight, &number_of_children) != EOF)
   {
     weights[current_node] = weight;
-    printf ("Work for %d : %d\n", current_node, weights[current_node]);
     sons[current_node] = number_of_children;
+#ifdef _GRAPHICALL_DEBUG
     printf ("Sons for %d : %d\n", current_node, sons[current_node]);
+    printf ("Work for %d : %d\n", current_node, weights[current_node]);
+#endif
 
     if (number_of_children != 0)
     {
@@ -94,7 +93,9 @@ int METHOD(entry, main)(void *_this, int argc, char** argv)
         int next;
         fscanf(file, "%d,", &next);
         children[current_node][i] = next;
+#ifdef _GRAPHICALL_DEBUG
         printf ("Children [%d][%d] : %d\n", current_node, i, children[current_node][i]);
+#endif
       }
     } else { // current_node is a leaf.
       children[current_node] = NULL;
@@ -102,7 +103,14 @@ int METHOD(entry, main)(void *_this, int argc, char** argv)
   }
 
   /* First CALL : */
-  CALLMINE(self, self_work, 0);
+#ifdef _GRAPHICALL_TIMING
+  tick_t t1, t2;
 
-  return 0;
+  GET_TICK (t1);
+#endif
+  CALLMINE(self, self_work, 0);
+#ifdef _GRAPHICALL_TIMING
+  GET_TICK (t2);
+  printf ("Time : %f \n", TIMING_DELAY (t1, t2));
+#endif
 }
