@@ -1,9 +1,9 @@
 CC=gcc
-CFLAGS=-std=c99 -I../ -Wall -g $(shell pkg-config --cflags kaapi)
+CFLAGS=-I../ -Wall -g $(shell pkg-config --cflags kaapi)
 #CFLAGS=-std=c99 -O3 $(shell pkg-config --cflags kaapi)
-LDFLAGS=$(shell pkg-config --libs kaapi) -lpthread
+LDFLAGS=$(shell pkg-config --libs kaapi) -lpthread -lm
 
-SRC=$(wildcard *.c)
+SRC=joe.c boot.c
 OBJ=$(SRC:.c=.o)
 OUT=graphiCALL
 
@@ -15,11 +15,11 @@ graphiCALL: $(OBJ)
 %.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-perl:
+joe.c:../cecilia_version/src/graphiCALL/joe.c
 	cecilia2xkaapi.pl ../cecilia_version/src/graphiCALL/*.c
 
 run:
-	LD_LIBRARY_PATH=$(HOME)/opt/lib/ ./graphiCALL 5 4	
+	LD_LIBRARY_PATH=$(HOME)/opt/lib/ ./graphiCALL ../dots/tests_1.dot
 
 clean:
 	rm -rf graphiCALL *.o
