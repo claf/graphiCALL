@@ -1,5 +1,5 @@
 /*
- * kaapi_main.c
+ * main.c
  *
  * Created by Christophe Laferriere on 22/11/10.
  * Copyright 2010 INRIA. All rights reserved.
