@@ -1,7 +1,5 @@
 dots/
-graphiCALL
 cecilia_version/target/
-joe.c
 joe.o
 main.h
 main.o

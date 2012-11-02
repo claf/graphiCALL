@@ -5,11 +5,6 @@
 #include <timing.h>
 #include <math.h>
 
-DECLARE_DATA {
-};
-
-#include <cecilia.h>
-
 #define _GRAPHICALL_TIMING 1
 //#define _GRAPHICALL_DEBUG 1
 unsigned int** children;
@@ -26,7 +21,7 @@ void work(int aow)
   } 
 }
 
-void METHOD(self, self_work)(void* _this, int node)
+void self_work(int node)
 {
   int i;
 
@@ -39,12 +34,12 @@ void METHOD(self, self_work)(void* _this, int node)
 #ifdef _GRAPHICALL_DEBUG
     printf ("CALLING %d, son of %d\n", children[node][i], node);
 #endif
-    CALLMINE(self, self_work, children[node][i]);
+    self_work (children[node][i]);
   }
 
 }
 
-int METHOD(entry, main)(void *_this, int argc, char** argv)
+int main(int argc, char** argv)
 {
   unsigned int iseed = (unsigned int)time(NULL);
   int i;
@@ -108,11 +103,11 @@ int METHOD(entry, main)(void *_this, int argc, char** argv)
 
   GET_TICK (t1);
 #endif
-  CALLMINE(self, self_work, 0);
+  self_work (0);
 
-  kaapi_sched_sync();
 #ifdef _GRAPHICALL_TIMING
   GET_TICK (t2);
   printf ("Time : %f \n", TIMING_DELAY (t1, t2));
 #endif
+  return 1;
 }
